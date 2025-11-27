@@ -161,11 +161,12 @@ const observer = new IntersectionObserver((entries) => {
                 progressBar.style.width = progress + '%';
             }
             
-            // Animate stat cards
-            if (entry.target.classList.contains('stat-card')) {
+            // Animate stat cards only once
+            if (entry.target.classList.contains('stat-card') && !entry.target.dataset.animated) {
                 const countElement = entry.target.querySelector('h4');
                 const targetCount = parseInt(countElement.textContent);
                 animateCount(countElement, targetCount);
+                entry.target.dataset.animated = 'true'; // Mark as animated
             }
         }
     });
