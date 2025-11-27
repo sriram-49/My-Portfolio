@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Adorable Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span class="logo-text">MyPortfolio</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#certifications" class="nav-link">Certifications</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="fade-in">Hi, I'm <span class="gradient-text">Sriramkrishna V</span></h1>
+                <h2 class="typing-text">IT Undergraduate Student</h2>
+                <p class="hero-description fade-in-delay">A Guy who's Passionate about coding, learning, and building amazing projects!</p>
+                <div class="hero-buttons fade-in-delay-2">
+                    <a href="#projects" class="btn btn-primary">
+                        <i class="fas fa-folder-open"></i> View My Work
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        <i class="fas fa-envelope"></i> Get In Touch
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="floating-icons">
+                        <i class="fas fa-coffee icon-float"></i>
+                        <i class="fas fa-book icon-float"></i>
+                        <i class="fas fa-lightbulb icon-float"></i>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h3>Hello! I'm an IT Student 👋</h3>
+                    <p>A highly motivated and detail-oriented undergraduate student pursuing a Bachelor's degree in Information Technology, with a strong foundation in data structures, algorithms, and software development principles. Proficient in languages such as Python, Java, and C, with hands-on experience in building applications through academic projects and personal initiatives.</p>
+                    
+                    <div class="interests-section">
+                        <h4>Areas of Interest</h4>
+                        <div class="interests-tags">
+                            <span class="interest-tag">
+                                <i class="fas fa-brain"></i> Machine Learning
+                            </span>
+                            <span class="interest-tag">
+                                <i class="fas fa-database"></i> Database Management System
+                            </span>
+                            <span class="interest-tag">
+                                <i class="fas fa-chart-line"></i> Digital Marketing
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-project-diagram"></i>
+                            <h4>5+</h4>
+                            <p>Projects</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-trophy"></i>
+                            <h4>2</h4>
+                            <p>Internships</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title">My Skills</h2>
+            <p class="section-subtitle">Technologies I love working with</p>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h3>Python</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="80"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-java"></i>
+                    </div>
+                    <h3>Java</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="75"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <h3>JavaScript</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="75"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-git-alt"></i>
+                    </div>
+                    <h3>Git</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="70"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <h3>MERN Stack</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="70"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <h3>HTML</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="75"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <h3>CSS</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="75"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-php"></i>
+                    </div>
+                    <h3>PHP</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-progress="75"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">My Projects</h2>
+            <p class="section-subtitle">Things I've built with ❤️</p>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>MG Classifier</h3>
+                        <p>A machine learning project designed to classify songs into genres by analyzing their audio features and applying supervised learning algorithms.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/sriram-49/AIML" class="project-link"><i class="fab fa-github"></i> Code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>ClassQuiz</h3>
+                        <p>An educational platform that helps educators simplify assessment work in an easy and interactive way.</p>
+                        <div class="project-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">Express</span>
+                            <span class="tag">TypeScript</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/sriram-49/ClassQuiz" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://classquiz-530632394665.us-west1.run.app/" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications" class="certifications">
+        <div class="container">
+            <h2 class="section-title">Certifications</h2>
+            <p class="section-subtitle">Professional achievements & credentials 🏆</p>
+            <div class="certifications-grid">
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Cloud Computing</h3>
+                        <p class="cert-issuer">NPTEL</p>
+                        <p class="cert-date">Issued: 2024</p>
+                        <p class="cert-description">Comprehensive understanding of cloud computing concepts, architectures, and services.</p>
+                        <a href="certificates/nptel-cloud-computing.pdf" class="cert-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Certificate
+                        </a>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Introduction to Industry 4.0 and Industrial Internet of Things</h3>
+                        <p class="cert-issuer">NPTEL</p>
+                        <p class="cert-date">Issued: 2024</p>
+                        <p class="cert-description">Understanding Industry 4.0 concepts and IIoT applications.</p>
+                        <a href="certificates/nptel-industry-4.0-iiot.pdf" class="cert-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Certificate
+                        </a>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Introduction To Internet Of Things</h3>
+                        <p class="cert-issuer">NPTEL</p>
+                        <p class="cert-date">Issued: 2024</p>
+                        <p class="cert-description">Fundamentals of IoT technology, architecture, and applications.</p>
+                        <a href="certificates/nptel-iot.pdf" class="cert-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Certificate
+                        </a>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Oracle Cloud Infrastructure</h3>
+                        <p class="cert-issuer">Oracle</p>
+                        <p class="cert-date">Issued: 2024</p>
+                        <p class="cert-description">Oracle Cloud Infrastructure fundamentals and services.</p>
+                        <a href="certificates/oracle-cloud-infrastructure.pdf" class="cert-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Certificate
+                        </a>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Ethical Hacking</h3>
+                        <p class="cert-issuer">Cisco</p>
+                        <p class="cert-date">Issued: 2024</p>
+                        <p class="cert-description">Cybersecurity fundamentals and ethical hacking techniques.</p>
+                        <a href="certificates/cisco-ethical-hacking.pdf" class="cert-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Certificate
+                        </a>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Product Marketing</h3>
+                        <p class="cert-issuer">Internship Certificate</p>
+                        <p class="cert-date">Issued: 2024</p>
+                        <p class="cert-description">Hands-on experience in product marketing strategies and execution.</p>
+                        <a href="certificates/internship-product-marketing.pdf" class="cert-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Certificate
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <p class="section-subtitle">Let's create something amazing together!</p>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>sriramkrishnav4949@gmail.com</p>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone</h3>
+                        <p>+919080158337</p>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Location</h3>
+                        <p>Namakkal, Tamilnadu, India</p>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Name" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Your Message" rows="5" required></textarea>
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+            <div class="social-links">
+                <a href="https://github.com/sriram-49" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/sriramkrishna-v-805388290/" class="social-link"><i class="fab fa-linkedin"></i></a>
+                <a href="https://wa.me/919080158337?text=Hi%20Sriramkrishna!" class="social-link"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Sriramkrishna V. Made with <i class="fas fa-heart"></i> and lots of ☕</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
