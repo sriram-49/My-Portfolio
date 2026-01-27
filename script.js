@@ -103,8 +103,7 @@ const typingText = document.querySelector('.typing-text');
 const phrases = [
     'IT Undergraduate Student',
     'Web Developer',
-    'Problem Solver',
-    'Creative Thinker',
+    'AI Explorer',
     'Tech Enthusiast'
 ];
 
