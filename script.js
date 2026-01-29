@@ -15,88 +15,12 @@ navLinks.forEach(link => {
     });
 });
 
-// ========== Theme Toggle with Animation ==========
-const themeToggle = document.getElementById('themeToggle');
+// ========== Force Dark Mode Theme ==========
 const body = document.body;
-const themeIcon = themeToggle.querySelector('i');
 
-// Check for saved theme preference or default to light mode
-const currentTheme = localStorage.getItem('theme') || 'light';
-if (currentTheme === 'dark') {
-    body.classList.add('dark-mode');
-    themeIcon.classList.remove('fa-moon');
-    themeIcon.classList.add('fa-sun');
-}
-
-// Theme toggle with ripple effect from floating card
-themeToggle.addEventListener('click', (e) => {
-    const card = document.querySelector('.floating-card');
-    const rect = card.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    
-    // Create expanding circle animation
-    const ripple = document.createElement('div');
-    ripple.className = 'theme-ripple';
-    ripple.style.left = x + 'px';
-    ripple.style.top = y + 'px';
-    document.body.appendChild(ripple);
-    
-    // Toggle dark mode after brief delay
-    setTimeout(() => {
-        body.classList.toggle('dark-mode');
-        
-        // Toggle icon
-        if (body.classList.contains('dark-mode')) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-            localStorage.setItem('theme', 'light');
-        }
-    }, 300);
-    
-    // Remove ripple after animation
-    setTimeout(() => {
-        ripple.remove();
-    }, 1000);
-});
-
-// Add ripple animation styles
-const rippleStyle = document.createElement('style');
-rippleStyle.textContent = `
-    .theme-ripple {
-        position: fixed;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: var(--primary-gradient);
-        pointer-events: none;
-        transform: translate(-50%, -50%) scale(0);
-        animation: rippleExpand 1s ease-out forwards;
-        z-index: 9998;
-        mix-blend-mode: multiply;
-    }
-    
-    body.dark-mode .theme-ripple {
-        background: radial-gradient(circle, #000000 0%, #1a0000 100%);
-        mix-blend-mode: normal;
-    }
-    
-    @keyframes rippleExpand {
-        0% {
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(-50%, -50%) scale(100);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(rippleStyle);
+// Always use dark mode (red and black theme)
+body.classList.add('dark-mode');
+localStorage.setItem('theme', 'dark');
 
 // ========== Typing Animation ==========
 const typingText = document.querySelector('.typing-text');
@@ -171,8 +95,28 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
+// ========== Project Cards Slide-In Animation ==========
+const projectObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('slide-in')) {
+            const projectCards = document.querySelectorAll('.project-card');
+            projectCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('slide-in');
+                }, index * 200); // Stagger by 200ms
+            });
+        }
+    });
+}, { threshold: 0.2 });
+
+// Observe the projects section
+const projectsSection = document.querySelector('.projects');
+if (projectsSection) {
+    projectObserver.observe(projectsSection);
+}
+
 // Observe elements for animation
-document.querySelectorAll('.skill-card, .project-card, .stat-card, .about-text, .contact-card, .cert-card').forEach(el => {
+document.querySelectorAll('.skill-card, .stat-card, .about-text, .contact-card, .cert-card').forEach(el => {
     observer.observe(el);
 });
 
@@ -327,8 +271,8 @@ document.addEventListener('mousemove', (e) => {
     // Set gradient based on theme
     const isDarkMode = document.body.classList.contains('dark-mode');
     const gradient = isDarkMode 
-        ? 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)' 
-        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        ? 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)' 
+        : 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)';
     
     trail.style.cssText = `
         position: fixed;
