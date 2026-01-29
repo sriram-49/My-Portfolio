@@ -11,8 +11,8 @@ NPTEL Certificates:
 Oracle Certificate:
 - oracle-cloud-infrastructure.pdf
 
-Cisco Certificate:
-- cisco-ethical-hacking.pdf
+Hedera Certificate:
+- hedera-hashgraph-developer.pdf
 
 Internship Certificate:
 - internship-product-marketing.pdf
