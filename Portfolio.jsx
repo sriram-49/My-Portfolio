@@ -937,12 +937,12 @@ export default function Portfolio() {
           </Reveal>
         </div>
         <HScroll dark items={[
-          { title:"Oracle Cloud Infrastructure", sub:"Oracle · Certification",           year:"2024", desc:"Oracle Cloud Infrastructure Foundations Associate certification.",                    bg:{ base:"#9B6B2F", light:"#C4914A", dark:"#7A5020" }, num:"01", href:"/Assets/oracle-cloud-infrastructure.pdf" },
+          { title:"Oracle Cloud Infrastructure", sub:"Oracle · Certification",           year:"2025", desc:"Oracle Cloud Infrastructure Foundations Associate certification.",                    bg:{ base:"#9B6B2F", light:"#C4914A", dark:"#7A5020" }, num:"01", href:"/Assets/oracle-cloud-infrastructure.pdf" },
           { title:"NPTEL IoT",                   sub:"NPTEL · Certification",             year:"2024", desc:"Introduction to Internet of Things — NPTEL online course completion.",               bg:{ base:"#C4914A", light:"#D4A86A", dark:"#9B6B2F" }, num:"02", href:"/Assets/nptel-iot.pdf" },
           { title:"NPTEL Industry 4.0 & IIoT",   sub:"NPTEL · Certification",             year:"2024", desc:"Industry 4.0 and Industrial Internet of Things — NPTEL course certificate.",         bg:{ base:"#5C3D1E", light:"#7A5432", dark:"#3D2810" }, num:"03", href:"/Assets/nptel-industry-4.0-iiot.pdf" },
-          { title:"NPTEL Cloud Computing",        sub:"NPTEL · Certification",             year:"2024", desc:"Cloud Computing fundamentals and architecture — NPTEL course certificate.",          bg:{ base:"#2C1A0E", light:"#4A2E1A", dark:"#1A0D06" }, num:"04", href:"/Assets/nptel-cloud-computing.pdf" },
-          { title:"Internship",                   sub:"Product Marketing · Experience",    year:"2024", desc:"Product Marketing internship — hands-on experience in digital marketing strategy.",  bg:{ base:"#9B6B2F", light:"#B8823E", dark:"#7A5020" }, num:"05", href:"/Assets/internship-product-marketing.pdf" },
-          { title:"Hashgraph",                    sub:"Hedera · Certification",            year:"2024", desc:"Hedera Hashgraph foundations — distributed ledger technology certificate.",          bg:{ base:"#7A5020", light:"#9B6B2F", dark:"#4A2E1A" }, num:"06", href:"/Assets/Hashgraph.pdf" },
+          { title:"NPTEL Cloud Computing",        sub:"NPTEL · Certification",             year:"2025", desc:"Cloud Computing fundamentals and architecture — NPTEL course certificate.",          bg:{ base:"#2C1A0E", light:"#4A2E1A", dark:"#1A0D06" }, num:"04", href:"/Assets/nptel-cloud-computing.pdf" },
+          { title:"Internship",                   sub:"Product Marketing · Experience",    year:"2025", desc:"Product Marketing internship — hands-on experience in digital marketing strategy.",  bg:{ base:"#9B6B2F", light:"#B8823E", dark:"#7A5020" }, num:"05", href:"/Assets/internship-product-marketing.pdf" },
+          { title:"Hashgraph",                    sub:"Hedera · Certification",            year:"2026", desc:"Hedera Hashgraph foundations — distributed ledger technology certificate.",          bg:{ base:"#7A5020", light:"#9B6B2F", dark:"#4A2E1A" }, num:"06", href:"/Assets/Hashgraph.pdf" },
         ]} />
       </section>
 
