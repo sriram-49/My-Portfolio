@@ -190,7 +190,7 @@ function HeroTitleDom() {
 
 
 /* ─── HORIZONTAL SCROLL CARDS (Spylt-style) ─────────────────────────────── */
-function HScroll({ items, dark = false }) {
+function HScroll({ items, dark = false, compact = false }) {
   const trackRef = useRef(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -248,27 +248,29 @@ function HScroll({ items, dark = false }) {
       ref={trackRef}
       onMouseDown={onMouseDown}
       style={{
-        display: "flex", gap: "72px",
+        display: "flex", gap: compact ? "24px" : "72px",
         overflowX: "auto", overflowY: "hidden",
-        padding: "20px 80px 72px",
+        padding: compact ? "16px 20px 56px" : "20px 80px 72px",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
-        cursor: "grab",
+        cursor: compact ? "auto" : "grab",
         WebkitOverflowScrolling: "touch",
         userSelect: "none",
+        scrollSnapType: compact ? "x mandatory" : "none",
       }}
     >
       {items.map((item, i) => (
-        <SpyltCard key={i} item={item} index={i} dark={dark} />
+        <SpyltCard key={i} item={item} index={i} dark={dark} compact={compact} />
       ))}
       <div style={{ minWidth: "40px", flexShrink: 0 }} />
     </div>
   );
 }
 
-function SpyltCard({ item, index, dark }) {
+function SpyltCard({ item, index, dark, compact = false }) {
   const [hovered, setHovered] = useState(false);
   const { bg, title, sub, year, desc, num, href } = item;
+  const isActive = compact || hovered;
 
   const handleClick = () => {
     if (href) window.open(href, "_blank", "noopener,noreferrer");
@@ -281,20 +283,23 @@ function SpyltCard({ item, index, dark }) {
       onClick={handleClick}
       style={{
         position: "relative",
-        minWidth: "360px",
-        height: "480px",
-        borderRadius: "24px",
+        minWidth: compact ? "calc(100vw - 64px)" : "360px",
+        width: compact ? "calc(100vw - 64px)" : "360px",
+        maxWidth: compact ? "340px" : "360px",
+        height: compact ? "420px" : "480px",
+        borderRadius: compact ? "22px" : "24px",
         background: bg.base,
         overflow: "hidden",
         flexShrink: 0,
-        transform: hovered
-          ? "rotate(0deg) scale(1.03) translateY(-8px)"
+        transform: isActive
+          ? compact ? "rotate(0deg)" : "rotate(0deg) scale(1.03) translateY(-8px)"
           : `rotate(${index % 2 === 0 ? "-2deg" : "2deg"})`,
         transition: "transform 0.45s cubic-bezier(.16,1,.3,1), box-shadow 0.45s",
-        boxShadow: hovered
-          ? `0 32px 80px ${bg.dark}88`
+        boxShadow: isActive
+          ? compact ? `0 18px 48px ${bg.dark}55` : `0 32px 80px ${bg.dark}88`
           : `0 12px 40px ${bg.dark}44`,
         cursor: "pointer",
+        scrollSnapAlign: compact ? "center" : "none",
       }}
     >
       {/* large background blob shape */}
@@ -306,7 +311,7 @@ function SpyltCard({ item, index, dark }) {
         background: bg.light,
         opacity: 0.35,
         transition: "transform 0.5s ease",
-        transform: hovered ? "scale(1.2)" : "scale(1)",
+        transform: isActive ? "scale(1.2)" : "scale(1)",
       }} />
       <div style={{
         position: "absolute",
@@ -327,12 +332,12 @@ function SpyltCard({ item, index, dark }) {
 
       {/* top row */}
       <div style={{
-        position: "absolute", top: "28px", left: "28px", right: "28px",
+        position: "absolute", top: compact ? "24px" : "28px", left: compact ? "22px" : "28px", right: compact ? "22px" : "28px",
         display: "flex", justifyContent: "space-between", alignItems: "center",
       }}>
         <span style={{
           fontFamily: "'Bebas Neue', cursive",
-          fontSize: "48px",
+          fontSize: compact ? "42px" : "48px",
           letterSpacing: "0.02em",
           color: "rgba(255,255,255,0.15)",
           lineHeight: 1,
@@ -351,23 +356,23 @@ function SpyltCard({ item, index, dark }) {
       {/* center desc — fades in on hover */}
       <div style={{
         position: "absolute",
-        top: "90px", left: "28px", right: "28px",
-        opacity: hovered ? 1 : 0,
-        transform: hovered ? "translateY(0)" : "translateY(12px)",
+        top: compact ? "84px" : "90px", left: compact ? "22px" : "28px", right: compact ? "22px" : "28px",
+        opacity: isActive ? 1 : 0,
+        transform: isActive ? "translateY(0)" : "translateY(12px)",
         transition: "opacity 0.35s ease 0.05s, transform 0.35s ease 0.05s",
       }}>
         <p style={{
           fontFamily: "'Lora', serif",
-          fontSize: "14px",
+          fontSize: compact ? "13px" : "14px",
           color: "rgba(255,255,255,0.82)",
-          lineHeight: 1.75,
+          lineHeight: compact ? 1.65 : 1.75,
         }}>{desc}</p>
       </div>
 
       {/* bottom content */}
       <div style={{
         position: "absolute",
-        bottom: "28px", left: "28px", right: "28px",
+        bottom: compact ? "24px" : "28px", left: compact ? "22px" : "28px", right: compact ? "22px" : "28px",
       }}>
         {/* sub label */}
         <div style={{
@@ -387,13 +392,13 @@ function SpyltCard({ item, index, dark }) {
         {/* big title */}
         <h3 style={{
           fontFamily: "'Bebas Neue', cursive",
-          fontSize: "clamp(26px,3vw,34px)",
+          fontSize: compact ? "30px" : "clamp(26px,3vw,34px)",
           letterSpacing: "0.04em",
           color: "#FFFFFF",
           lineHeight: 1.05,
           textShadow: "0 2px 12px rgba(0,0,0,0.3)",
           transition: "transform 0.35s cubic-bezier(.16,1,.3,1)",
-          transform: hovered ? "translateY(-4px)" : "none",
+          transform: isActive && !compact ? "translateY(-4px)" : "none",
         }}>{title}</h3>
         {/* arrow */}
         <div style={{
@@ -471,7 +476,7 @@ function MagneticBtn({ children, className = "", onClick, type = "button", style
 
 
 /* ─── PHOTO FRAME ────────────────────────────────────────────────────────── */
-function PhotoFrame() {
+function PhotoFrame({ compact = false }) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const frameRef = useRef(null);
 
@@ -491,10 +496,10 @@ function PhotoFrame() {
       onMouseLeave={onLeave}
       style={{
         position: "relative",
-        width: "320px",
-        height: "420px",
+        width: compact ? "min(78vw, 320px)" : "320px",
+        height: compact ? "min(102vw, 420px)" : "420px",
         perspective: "800px",
-        cursor: "crosshair",
+        cursor: compact ? "default" : "crosshair",
       }}
     >
       {/* rotating decorative ring */}
@@ -521,7 +526,7 @@ function PhotoFrame() {
         border: `1.5px solid ${T.caramel}44`,
         boxShadow: `0 24px 64px ${T.espresso}22, 0 0 0 1px ${T.caramel}18, inset 0 1px 0 rgba(255,255,255,0.6)`,
         overflow: "hidden",
-        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transform: compact ? "none" : `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.25s cubic-bezier(.23,1,.32,1)",
         transformStyle: "preserve-3d",
         position: "relative",
@@ -581,7 +586,7 @@ function PhotoFrame() {
 
       {/* floating tag chips */}
       <div style={{
-        position: "absolute", top: "-8px", right: "-40px",
+        position: "absolute", top: compact ? "-10px" : "-8px", right: compact ? "-8px" : "-40px",
         background: T.caramel, color: T.cream, borderRadius: "20px", padding: "6px 14px",
         fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.15em",
         boxShadow: `0 8px 20px ${T.caramel}44`,
@@ -592,13 +597,15 @@ function PhotoFrame() {
 }
 
 /* ─── CURSOR GLOW ────────────────────────────────────────────────────────── */
-function CursorGlow() {
+function CursorGlow({ disabled = false }) {
   const [pos, setPos] = useState({ x: -200, y: -200 });
   useEffect(() => {
+    if (disabled) return;
     const h = (e) => setPos({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", h);
     return () => window.removeEventListener("mousemove", h);
-  }, []);
+  }, [disabled]);
+  if (disabled) return null;
   return (
     <div style={{
       position: "fixed", top: 0, left: 0, pointerEvents: "none", zIndex: 9999,
@@ -625,9 +632,20 @@ function SLabel({ children }) {
 export default function Portfolio() {
   const [active, setActive] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
   const heroRef = useRef(null);
   const heroContentRef = useRef(null);
   const heroInside = useRef(false);
+  const isMobile = viewportWidth <= 767;
+  const isTablet = viewportWidth <= 1024;
+  const sidePadding = isMobile ? 20 : isTablet ? 32 : 48;
+  const sectionGap = isMobile ? 28 : 80;
+
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // Hero: direct DOM transition toggling — no React state, no flicker
   useEffect(() => {
@@ -708,12 +726,12 @@ export default function Portfolio() {
   return (
     <div style={{ background: T.milk, color: T.espresso, minHeight: "100vh", fontFamily: "'Lora', serif", overflowX: "hidden", paddingTop: "64px" }}>
       <style>{CSS}</style>
-      <CursorGlow />
+      <CursorGlow disabled={isTablet} />
 
       {/* ── NAV ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, width: "100%", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 48px", height: "64px", background: `${T.milk}f0`, backdropFilter: "blur(16px)",
+        padding: `0 ${sidePadding}px`, height: "64px", background: `${T.milk}f0`, backdropFilter: "blur(16px)",
         borderBottom: `1px solid ${T.caramel}22`
       }}>
         <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "26px", letterSpacing: "0.1em", color: T.espresso }}>
@@ -728,11 +746,11 @@ export default function Portfolio() {
       </nav>
 
       {menuOpen && (
-        <div style={{ position: "fixed", top: "64px", inset: "64px 0 0 0", background: T.milk, zIndex: 199, display: "flex", flexDirection: "column", padding: "32px 48px", gap: "8px" }}>
+        <div style={{ position: "fixed", top: "64px", inset: "64px 0 0 0", background: `${T.milk}fa`, zIndex: 199, display: "flex", flexDirection: "column", padding: isMobile ? "24px 20px" : "32px 48px", gap: "8px", backdropFilter: "blur(12px)" }}>
           {NAV.map((l, i) => (
             <button key={l} onClick={() => goto(l)}
               style={{
-                fontFamily: "'Bebas Neue', cursive", fontSize: "42px", letterSpacing: "0.08em", color: T.espresso, background: "none", border: "none", textAlign: "left", cursor: "pointer",
+                fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? "34px" : "42px", letterSpacing: "0.08em", color: T.espresso, background: "none", border: "none", textAlign: "left", cursor: "pointer",
                 animation: `slideInLeft 0.4s cubic-bezier(.16,1,.3,1) ${i * 60}ms both`
               }}>
               {l}
@@ -742,20 +760,22 @@ export default function Portfolio() {
       )}
 
       {/* ── HOME ── */}
-      <section id="home" ref={heroRef} style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden" }}>
+      <section id="home" ref={heroRef} style={{ position: "relative", minHeight: isMobile ? "auto" : "100vh", display: "flex", alignItems: "center", overflow: "hidden", padding: isMobile ? "32px 0 56px" : 0 }}>
         <Particles />
 
         <div style={{
-          position: "absolute", right: "-60px", top: "10%", width: "520px", height: "520px",
+          position: "absolute", right: isMobile ? "-140px" : "-60px", top: isMobile ? "-40px" : "10%", width: isMobile ? "320px" : "520px", height: isMobile ? "320px" : "520px",
           background: `${T.caramel}10`, borderRadius: "50%", filter: "blur(80px)", pointerEvents: "none"
         }} />
-        <div style={{
-          position: "absolute", right: "8%", top: "50%", transform: "translateY(-50%)",
-          width: "2px", height: "60%", background: `linear-gradient(to bottom, transparent, ${T.caramel}40, transparent)`,
-          animation: "pulseBar 3s ease-in-out infinite"
-        }} />
+        {!isMobile && (
+          <div style={{
+            position: "absolute", right: "8%", top: "50%", transform: "translateY(-50%)",
+            width: "2px", height: "60%", background: `linear-gradient(to bottom, transparent, ${T.caramel}40, transparent)`,
+            animation: "pulseBar 3s ease-in-out infinite"
+          }} />
+        )}
 
-        <div ref={heroContentRef} style={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto", padding: "0 48px", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "48px" }}>
+        <div ref={heroContentRef} style={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px`, width: "100%", display: "flex", flexDirection: isMobile ? "column-reverse" : "row", alignItems: isMobile ? "stretch" : "center", justifyContent: "space-between", gap: isMobile ? "36px" : "48px" }}>
 
           {/* Left: text */}
           <div style={{ flex: "1", minWidth: 0 }}>
@@ -767,34 +787,36 @@ export default function Portfolio() {
               <p data-hero="1" data-delay="460" data-from="translateY(28px)"
                 style={{
                   fontFamily: "'Lora', serif", fontSize: "clamp(15px,1.6vw,19px)", color: `${T.espresso}99`, lineHeight: 1.8,
-                  maxWidth: "480px", marginBottom: "44px", opacity: 0, transform: "translateY(28px)"
+                  maxWidth: isMobile ? "100%" : "480px", marginBottom: isMobile ? "32px" : "44px", opacity: 0, transform: "translateY(28px)"
                 }}>
                 A Guy who's Passionate about coding, learning, and building amazing projects!
               </p>
             </div>
 
             <div data-hero="1" data-delay="580" data-from="translateY(20px)"
-              style={{ display: "flex", gap: "16px", flexWrap: "wrap", opacity: 0, transform: "translateY(20px)" }}>
-              <MagneticBtn className="btn-fill" onClick={() => goto("Projects")}>View Projects</MagneticBtn>
-              <MagneticBtn className="btn-outline" onClick={() => goto("Contact")}>Get in Touch</MagneticBtn>
+              style={{ display: "flex", gap: "16px", flexWrap: "wrap", opacity: 0, transform: "translateY(20px)", width: isMobile ? "100%" : "auto" }}>
+              <MagneticBtn className="btn-fill" onClick={() => goto("Projects")} style={isMobile ? { width: "100%" } : {}}>View Projects</MagneticBtn>
+              <MagneticBtn className="btn-outline" onClick={() => goto("Contact")} style={isMobile ? { width: "100%" } : {}}>Get in Touch</MagneticBtn>
             </div>
           </div>
 
           {/* Right: photo frame */}
           <div data-hero="1" data-delay="300" data-from="translateY(32px)"
-            style={{ flexShrink: 0, opacity: 0, transform: "translateY(32px)" }}>
-            <PhotoFrame />
+            style={{ flexShrink: 0, opacity: 0, transform: "translateY(32px)", alignSelf: isMobile ? "center" : "auto" }}>
+            <PhotoFrame compact={isMobile} />
           </div>
 
           {/* scroll indicator */}
-          <div data-hero="1" data-delay="700" data-from="translateY(10px)"
-            style={{
-              position: "absolute", right: "-8px", bottom: "-80px",
-              display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", opacity: 0, transform: "translateY(10px)"
-            }}>
-            <div style={{ width: "1px", height: "80px", background: `linear-gradient(to bottom, transparent, ${T.caramel})` }} />
-            <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "11px", letterSpacing: "0.2em", color: T.caramel, writingMode: "vertical-lr" }}>SCROLL</span>
-          </div>
+          {!isMobile && (
+            <div data-hero="1" data-delay="700" data-from="translateY(10px)"
+              style={{
+                position: "absolute", right: "-8px", bottom: "-80px",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", opacity: 0, transform: "translateY(10px)"
+              }}>
+              <div style={{ width: "1px", height: "80px", background: `linear-gradient(to bottom, transparent, ${T.caramel})` }} />
+              <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "11px", letterSpacing: "0.2em", color: T.caramel, writingMode: "vertical-lr" }}>SCROLL</span>
+            </div>
+          )}
         </div>
       </section>
 
@@ -802,9 +824,9 @@ export default function Portfolio() {
       <Marquee items={["DATABASE MANAGEMENT SYSTEM", "DIGITAL MARKETING", "MACHINE LEARNING", "DATABASE MANAGEMENT SYSTEM", "DIGITAL MARKETING", "MACHINE LEARNING"]} />
 
       {/* ── ABOUT ── */}
-      <section id="about" style={{ padding: "120px 0", maxWidth: "1200px", margin: "0 auto", paddingLeft: "48px", paddingRight: "48px" }}>
+      <section id="about" style={{ padding: isMobile ? "88px 0" : "120px 0", maxWidth: "1200px", margin: "0 auto", paddingLeft: `${sidePadding}px`, paddingRight: `${sidePadding}px` }}>
         <Reveal><SLabel>About Me</SLabel></Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "1fr 1fr", gap: `${sectionGap}px`, alignItems: "start" }}>
           <div>
             <Reveal delay={80}>
               <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", lineHeight: 0.95, marginBottom: "32px", color: T.espresso }}>
@@ -818,7 +840,7 @@ export default function Portfolio() {
             </Reveal>
           </div>
           <div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "32px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px", marginBottom: "32px" }}>
               {[["4+", "Projects"], ["1", "Internship"], ["5+", "Certifications"]].map(([n, l], i) => (
                 <Reveal key={l} delay={i * 100} from="scale">
                   <div className="stat-card">
@@ -829,13 +851,15 @@ export default function Portfolio() {
               ))}
             </div>
             <Reveal delay={320}>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", justifyContent: isMobile ? "stretch" : "flex-end" }}>
                 <a
                   href="/assets/SriramkrishnaV_Resume.pdf"
                   download="SriramkrishnaV_Resume.pdf"
                   style={{
                     display: "inline-flex", alignItems: "center", gap: "10px",
                     padding: "12px 28px",
+                    width: isMobile ? "100%" : "auto",
+                    justifyContent: "center",
                     background: T.espresso,
                     color: T.cream,
                     borderRadius: "8px",
@@ -862,8 +886,8 @@ export default function Portfolio() {
       </section>
 
       {/* ── EDUCATION ── */}
-      <section id="education" style={{ background: T.espresso, padding: "120px 0" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px" }}>
+      <section id="education" style={{ background: T.espresso, padding: isMobile ? "88px 0" : "120px 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px` }}>
           <Reveal><SLabel>Education</SLabel></Reveal>
           <Reveal delay={80}>
             <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", color: T.cream, marginBottom: "56px", lineHeight: 0.95 }}>
@@ -888,14 +912,14 @@ export default function Portfolio() {
       </section>
 
       {/* ── SKILLS ── */}
-      <section id="skills" style={{ padding: "120px 0", maxWidth: "1200px", margin: "0 auto", paddingLeft: "48px", paddingRight: "48px" }}>
+      <section id="skills" style={{ padding: isMobile ? "88px 0" : "120px 0", maxWidth: "1200px", margin: "0 auto", paddingLeft: `${sidePadding}px`, paddingRight: `${sidePadding}px` }}>
         <Reveal><SLabel>Skills</SLabel></Reveal>
         <Reveal delay={80}>
           <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", color: T.espresso, marginBottom: "56px", lineHeight: 0.95 }}>
             TOOLS &<br /><span style={{ color: T.caramel }}>TECHNOLOGIES</span>
           </h2>
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: "40px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "repeat(2,1fr)", gap: isMobile ? "28px" : "40px" }}>
           {Object.entries(SKILLS).map(([cat, items], i) => (
             <Reveal key={cat} delay={i * 120}>
               <div>
@@ -914,8 +938,8 @@ export default function Portfolio() {
       </section>
 
       {/* ── PROJECTS ── */}
-      <section id="projects" style={{ background: `${T.espresso}08`, padding: "120px 0 0 0", overflow: "hidden" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 56px" }}>
+      <section id="projects" style={{ background: `${T.espresso}08`, padding: isMobile ? "88px 0 0 0" : "120px 0 0 0", overflow: "hidden" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px 56px` }}>
           <Reveal><SLabel>Projects</SLabel></Reveal>
           <Reveal delay={80}>
             <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", color: T.espresso, marginBottom: "0", lineHeight: 0.95 }}>
@@ -936,12 +960,12 @@ export default function Portfolio() {
             { base: "#5C3D1E", light: "#7A5432", dark: "#3D2810" },
           ][i % 4],
           num: String(i + 1).padStart(2, "0"),
-        }))} />
+        }))} compact={isMobile} />
       </section>
 
       {/* ── CERTIFICATIONS ── */}
-      <section id="certifications" style={{ background: T.espresso, padding: "120px 0 0 0", overflow: "hidden" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 56px" }}>
+      <section id="certifications" style={{ background: T.espresso, padding: isMobile ? "88px 0 0 0" : "120px 0 0 0", overflow: "hidden" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px 56px` }}>
           <Reveal><SLabel>Certifications</SLabel></Reveal>
           <Reveal delay={80}>
             <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", color: T.cream, marginBottom: "0", lineHeight: 0.95 }}>
@@ -956,15 +980,15 @@ export default function Portfolio() {
           { title: "NPTEL Cloud Computing", sub: "NPTEL · Certification", year: "2025", desc: "Cloud Computing fundamentals and architecture — NPTEL course certificate.", bg: { base: "#2C1A0E", light: "#4A2E1A", dark: "#1A0D06" }, num: "04", href: "/assets/nptel-cloud-computing.pdf" },
           { title: "Internship", sub: "Product Marketing · Experience", year: "2025", desc: "Product Marketing internship — hands-on experience in digital marketing strategy.", bg: { base: "#9B6B2F", light: "#B8823E", dark: "#7A5020" }, num: "05", href: "/assets/internship-product-marketing.pdf" },
           { title: "Hashgraph", sub: "Hedera · Certification", year: "2026", desc: "Hedera Hashgraph foundations — distributed ledger technology certificate.", bg: { base: "#7A5020", light: "#9B6B2F", dark: "#4A2E1A" }, num: "06", href: "/assets/Hashgraph.pdf" },
-        ]} />
+        ]} compact={isMobile} />
       </section>
 
 
       {/* ── CONTACT ── */}
-      <section id="contact" style={{ background: T.espresso, padding: "120px 0 0 0" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 80px" }}>
+      <section id="contact" style={{ background: T.espresso, padding: isMobile ? "88px 0 0 0" : "120px 0 0 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px ${isMobile ? 56 : 80}px` }}>
           <Reveal><SLabel>Contact</SLabel></Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "1fr 1fr", gap: `${sectionGap}px` }}>
             <div>
               <Reveal delay={80}>
                 <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", color: T.cream, marginBottom: "28px", lineHeight: 0.95 }}>
@@ -995,9 +1019,9 @@ export default function Portfolio() {
                 },
               ].map(({ icon, label, value, href }, i) => (
                 <Reveal key={label} delay={160 + i * 80} from="left">
-                  <div style={{ display: "flex", gap: "16px", alignItems: "center", padding: "14px 0", borderBottom: `1px solid ${T.caramel}20` }}>
+                  <div style={{ display: "flex", gap: "16px", alignItems: isMobile ? "flex-start" : "center", flexWrap: isMobile ? "wrap" : "nowrap", padding: "14px 0", borderBottom: `1px solid ${T.caramel}20` }}>
                     <span style={{ color: T.caramel, flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.2em", color: T.caramel, width: "80px" }}>{label}</span>
+                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.2em", color: T.caramel, width: isMobile ? "100%" : "80px" }}>{label}</span>
                     {href
                       ? <a href={href} style={{ fontSize: "14px", color: `${T.cream}cc`, textDecoration: "none" }}>{value}</a>
                       : <span style={{ fontSize: "14px", color: `${T.cream}cc` }}>{value}</span>
@@ -1038,18 +1062,18 @@ export default function Portfolio() {
                     href={href}
                     target={href.startsWith("mailto") ? undefined : "_blank"}
                     rel="noopener noreferrer"
-                    style={{ display: "flex", gap: "16px", alignItems: "center", padding: "16px 0", borderBottom: `1px solid ${T.caramel}25`, textDecoration: "none" }}
+                    style={{ display: "flex", gap: "16px", alignItems: isMobile ? "flex-start" : "center", flexWrap: isMobile ? "wrap" : "nowrap", padding: "16px 0", borderBottom: `1px solid ${T.caramel}25`, textDecoration: "none" }}
                   >
                     <span style={{ color: T.caramel, flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.2em", color: T.caramel, width: "80px" }}>{label}</span>
-                    <span style={{ fontSize: "14px", color: `${T.cream}cc` }}>{value}</span>
+                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.2em", color: T.caramel, width: isMobile ? "100%" : "80px" }}>{label}</span>
+                    <span style={{ fontSize: "14px", color: `${T.cream}cc`, wordBreak: "break-word" }}>{value}</span>
                   </a>
                 </Reveal>
               ))}
             </div>
             <Reveal delay={120} from="right">
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", minHeight: "320px" }}>
-                <svg width="320" height="320" viewBox="0 0 846.66 846.66" style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }} xmlns="http://www.w3.org/2000/svg">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", minHeight: isMobile ? "220px" : "320px" }}>
+                <svg width={isMobile ? "220" : "320"} height={isMobile ? "220" : "320"} viewBox="0 0 846.66 846.66" style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd", maxWidth: "100%", height: "auto" }} xmlns="http://www.w3.org/2000/svg">
                   <path fill={T.cream} d="M93.8 270.07l126.32 36.09 16.3 -57.07c3.15,-11.05 14.65,-17.46 25.7,-14.32l120.91 34.54c11.05,3.15 17.46,14.66 14.31,25.7l-16.31 57.12 7.48 2.13 77.13 -22.03 -16.32 -57.11c-3.14,-11.05 3.26,-22.56 14.31,-25.7l120.91 -34.55c11.05,-3.14 22.56,3.27 25.7,14.32l16.3 57.07 126.32 -36.08c11.05,-3.15 22.56,3.26 25.7,14.31l60.57 212.02c3.15,11.05 -3.26,22.56 -14.31,25.7l-56.57 16.17c-1.98,39.9 -29.22,74.68 -67.84,85.71l-242.46 69.27 -4.76 16.66c-3.14,11.05 -14.65,17.46 -25.7,14.31l-281.24 -80.34c-38.62,-11.04 -65.86,-45.81 -67.84,-85.72l-56.57 -16.16c-11.05,-3.14 -17.45,-14.65 -14.31,-25.7l60.57 -212.02c3.14,-11.05 14.65,-17.46 25.7,-14.32zm466.82 422.65c-13.89,-23.52 21.9,-44.65 35.79,-21.15l42.25 71.6c13.89,23.51 -21.9,44.64 -35.79,21.14l-42.25 -71.59zm105.68 1.33c-24.93,-11.12 -8.01,-49.02 16.91,-37.9l86.85 38.73c24.93,11.13 8.01,49.02 -16.91,37.9l-86.85 -38.73zm-416.85 -522.47c-15.38,22.55 -49.7,-0.87 -34.32,-23.42l45.78 -66.9c15.38,-22.54 49.7,0.88 34.32,23.42l-45.78 66.9zm-50.29 13.23c8.88,25.89 -30.49,39.38 -39.36,13.5l-28.17 -82.16c-8.88,-25.89 30.49,-39.38 39.36,-13.5l28.17 82.16zm234.96 420.53l-101.05 -27.61c-26.31,-7.16 -15.42,-47.18 10.9,-40.01l101.54 27.74 15.69 -54.93 -98.61 -26.13c-26.41,-6.95 -15.85,-47.12 10.58,-40.17l99.45 26.35 12.94 -45.32c-45.31,-12.95 -90.63,-25.9 -135.94,-38.84 -11.05,-3.14 -17.46,-14.65 -14.32,-25.7l16.32 -57.11 -80.9 -23.12 -16.31 57.08c-3.14,11.04 -14.65,17.45 -25.7,14.31l-54.47 -15.56 -52.35 183.24c-7.87,27.57 8.17,56.53 35.75,64.41l261.26 74.64c5.07,-17.76 10.14,-35.52 15.22,-53.27zm30.11 -229.44l52.74 15.06c11.05,3.15 17.46,14.66 14.31,25.7l-59.87 209.58 217.61 -62.16c27.58,-7.88 43.62,-36.85 35.75,-64.42l-52.35 -183.24 -54.47 15.56c-11.05,3.15 -22.56,-3.26 -25.7,-14.31l-16.3 -57.07 -80.91 23.11 16.32 57.11c3.14,11.05 -3.27,22.56 -14.32,25.7l-32.81 9.38zm280.04 -80l-31.84 9.09 49.14 172.03 31.84 -9.1 -49.14 -172.02zm-610.04 28.99l-31.84 -9.1 -49.14 172.03 31.84 9.09 49.14 -172.02z" />
                 </svg>
               </div>
@@ -1058,7 +1082,7 @@ export default function Portfolio() {
         </div>
 
         {/* ── FOOTER (attached to contact) ── */}
-        <div style={{ borderTop: `1px solid ${T.caramel}22`, padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "13px", color: `${T.cream}55` }}>
+        <div style={{ borderTop: `1px solid ${T.caramel}22`, padding: `24px ${sidePadding}px`, display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? "10px" : 0, justifyContent: "space-between", alignItems: "center", fontSize: "13px", color: `${T.cream}55`, textAlign: isMobile ? "center" : "left" }}>
           <span style={{ fontFamily: "'Bebas Neue', cursive", letterSpacing: "0.1em" }}>© 2026 Sriramkrishna V</span>
           <span>Built with React</span>
         </div>
@@ -1074,6 +1098,7 @@ const CSS = `
   html { scroll-behavior: auto; }
 
   body { cursor: none; }
+  a, button, img, svg { max-width: 100%; }
 
   .nav-links { display: flex; gap: 4px; }
   .nav-btn {
@@ -1173,10 +1198,41 @@ const CSS = `
 
   /* transitions handled via direct DOM style toggling — no keyframes needed */
 
+  @media (hover: none), (pointer: coarse) {
+    body { cursor: auto; }
+    .btn-fill::before, .btn-outline::before { transform: none; opacity: 0.08; }
+    .btn-fill:hover, .btn-outline:hover, .stat-card:hover, .edu-card:hover, .skill-tag:hover {
+      transform: none;
+      box-shadow: inherit;
+      background: inherit;
+      color: inherit;
+      border-color: inherit;
+    }
+  }
+
   @media (max-width: 768px) {
     .nav-links { display: none !important; }
     .hamburger { display: block !important; }
-    section, footer { padding-left: 24px !important; padding-right: 24px !important; }
-    nav { padding: 0 24px !important; }
+    .btn-fill, .btn-outline {
+      width: 100%;
+      justify-content: center;
+      padding: 15px 22px;
+    }
+    .stat-card {
+      padding: 24px 20px;
+    }
+    .edu-card {
+      flex-direction: column;
+      gap: 14px;
+      padding: 24px 20px;
+    }
+    .skill-tag {
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+    .marquee-track {
+      gap: 24px !important;
+      animation-duration: 20s;
+    }
   }
 `;
