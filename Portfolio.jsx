@@ -11,7 +11,7 @@ const T = {
 };
 
 /* ─── DATA ───────────────────────────────────────────────────────────────── */
-const NAV = ["Home", "About", "Education", "Skills", "Projects", "Certifications", "Contact"];
+const NAV = ["Home", "About", "Education", "Skills", "Projects", "Research", "Certifications", "Contact"];
 
 const PROJECTS = [
   { title: "MG Classifier", desc: "Music Genre Classification with ML. A machine learning project designed to classify songs into genres by analyzing their audio features and applying supervised learning algorithms.", tags: ["Python", "HTML", "CSS"], year: "2024", href: "https://github.com/sriram-49/Music-Genre-Classifier" },
@@ -22,9 +22,9 @@ const PROJECTS = [
 
 const SKILLS = {
   Languages: ["Python", "Java", "C", "C++", "JavaScript"],
-  Frameworks: ["React", "Node.js", "FastAPI"],
+  Frameworks: ["React", "Node.js", "FastAPI", "Spring Boot"],
   Databases: ["MongoDB", "SQLite", "Firebase"],
-  Tools: ["Git", "GitHub", "Blender", "Figma", "Canva"],
+  Tools: ["Git", "GitHub", "Google Cloud", "IntelliJ IDEA", "Supabase", "Figma", "Canva"],
   "Soft Skills": ["Problem Solving", "Creativity", "Time Management", "Leadership", "Emotional Intelligence"],
 };
 
@@ -192,6 +192,8 @@ function HeroTitleDom() {
 /* ─── HORIZONTAL SCROLL CARDS (Spylt-style) ─────────────────────────────── */
 function HScroll({ items, dark = false, compact = false }) {
   const trackRef = useRef(null);
+  const helmDrag = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftRef = useRef(0);
@@ -210,8 +212,8 @@ function HScroll({ items, dark = false, compact = false }) {
       e.stopPropagation();
       el.scrollLeft += e.deltaY * 1.2;
     };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    // Keep page-wheel behavior native; the helm and horizontal gestures control this track.
+    return undefined;
   }, []);
 
   // Document-level drag: keeps dragging even when cursor leaves the element
@@ -243,26 +245,85 @@ function HScroll({ items, dark = false, compact = false }) {
     trackRef.current.style.cursor = "grabbing";
   };
 
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const syncHelm = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      setScrollProgress(max > 0 ? el.scrollLeft / max : 0);
+    };
+    syncHelm();
+    el.addEventListener("scroll", syncHelm, { passive: true });
+    window.addEventListener("resize", syncHelm);
+    return () => {
+      el.removeEventListener("scroll", syncHelm);
+      window.removeEventListener("resize", syncHelm);
+    };
+  }, [items.length, compact]);
+
+  const steerStart = (e) => {
+    helmDrag.current = { x: e.clientX, scrollLeft: trackRef.current?.scrollLeft || 0 };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const steerMove = (e) => {
+    if (!helmDrag.current || !trackRef.current) return;
+    trackRef.current.scrollLeft = helmDrag.current.scrollLeft + (e.clientX - helmDrag.current.x) * 4;
+  };
+
+  const steerEnd = (e) => {
+    helmDrag.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  const steerWithKeys = (e) => {
+    if (!trackRef.current || !["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+    e.preventDefault();
+    trackRef.current.scrollBy({ left: e.key === "ArrowLeft" ? -320 : 320, behavior: "smooth" });
+  };
+
   return (
+    <div style={{ position: "relative" }}>
     <div
       ref={trackRef}
-      onMouseDown={onMouseDown}
+      className="native-hscroll"
       style={{
         display: "flex", gap: compact ? "24px" : "72px",
         overflowX: "auto", overflowY: "hidden",
         padding: compact ? "16px 20px 56px" : "20px 80px 72px",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
-        cursor: compact ? "auto" : "grab",
+        cursor: "auto",
         WebkitOverflowScrolling: "touch",
-        userSelect: "none",
-        scrollSnapType: compact ? "x mandatory" : "none",
+        scrollSnapType: "x proximity",
       }}
     >
       {items.map((item, i) => (
         <SpyltCard key={i} item={item} index={i} dark={dark} compact={compact} />
       ))}
       <div style={{ minWidth: "40px", flexShrink: 0 }} />
+    </div>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: compact ? "-38px" : "-48px", paddingBottom: compact ? "24px" : "34px", position: "relative", zIndex: 4 }}>
+        <button
+          type="button"
+          className="helm-control"
+          aria-label="Drag the ship wheel left or right to scroll cards"
+          title="Drag left or right to explore"
+          onPointerDown={steerStart}
+          onPointerMove={steerMove}
+          onPointerUp={steerEnd}
+          onPointerCancel={steerEnd}
+          onKeyDown={steerWithKeys}
+          style={{ width: compact ? "76px" : "94px", height: compact ? "76px" : "94px" }}
+        >
+          <img
+            src="/assets/scrollbar.png"
+            alt=""
+            draggable="false"
+            style={{ transform: `rotate(${scrollProgress * 720}deg)` }}
+          />
+        </button>
+      </div>
     </div>
   );
 }
@@ -789,7 +850,7 @@ export default function Portfolio() {
                   fontFamily: "'Lora', serif", fontSize: "clamp(15px,1.6vw,19px)", color: `${T.espresso}99`, lineHeight: 1.8,
                   maxWidth: isMobile ? "100%" : "480px", marginBottom: isMobile ? "32px" : "44px", opacity: 0, transform: "translateY(28px)"
                 }}>
-                A Guy who's Passionate about coding, learning, and building amazing projects!
+                A Guy who's Passionate about coding, learning, and building amazing projects to make the world amazing!
               </p>
             </div>
 
@@ -821,7 +882,7 @@ export default function Portfolio() {
       </section>
 
       {/* ── MARQUEE ── */}
-      <Marquee items={["DATABASE MANAGEMENT SYSTEM", "DIGITAL MARKETING", "MACHINE LEARNING", "DATABASE MANAGEMENT SYSTEM", "DIGITAL MARKETING", "MACHINE LEARNING"]} />
+      <Marquee items={["DATABASE MANAGEMENT SYSTEM", "WEB DEVELOPMENT", "MACHINE LEARNING", "DATABASE MANAGEMENT SYSTEM", "WEB DEVELOPMENT", "MACHINE LEARNING"]} />
 
       {/* ── ABOUT ── */}
       <section id="about" style={{ padding: isMobile ? "88px 0" : "120px 0", maxWidth: "1200px", margin: "0 auto", paddingLeft: `${sidePadding}px`, paddingRight: `${sidePadding}px` }}>
@@ -841,7 +902,7 @@ export default function Portfolio() {
           </div>
           <div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px", marginBottom: "32px" }}>
-              {[["4+", "Projects"], ["1", "Internship"], ["5+", "Certifications"]].map(([n, l], i) => (
+              {[["4+", "Projects"], ["1", "Internship"], ["5+", "Certifications"], ["1", "Patent"]].map(([n, l], i) => (
                 <Reveal key={l} delay={i * 100} from="scale">
                   <div className="stat-card">
                     <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "52px", letterSpacing: "0.02em", color: T.caramel, lineHeight: 1 }}>{n}</span>
@@ -964,6 +1025,57 @@ export default function Portfolio() {
       </section>
 
       {/* ── CERTIFICATIONS ── */}
+      <section id="research" style={{ background: T.milk, padding: isMobile ? "88px 0" : "120px 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px` }}>
+          <Reveal><SLabel>Research &amp; Publishments</SLabel></Reveal>
+          <Reveal delay={80}>
+            <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "clamp(40px,5vw,64px)", letterSpacing: "0.04em", color: T.espresso, marginBottom: isMobile ? "38px" : "56px", lineHeight: 0.95 }}>
+              RESEARCH <span style={{ color: T.caramel }}>&amp;</span><br />PUBLISHMENTS
+            </h2>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: isMobile ? "24px" : "32px" }}>
+            <Reveal delay={120} from="left">
+              <a className="research-card" href="https://ieeexplore.ieee.org/document/11383214/" target="_blank" rel="noopener noreferrer">
+                <div className="research-visual" style={{ background: `linear-gradient(135deg, ${T.espresso}, #5C3D1E)` }}>
+                  <svg className="autoquizzer-logo" width="160" height="160" viewBox="0 0 100 100" role="img" aria-label="AutoQuizzer logo">
+                    <circle cx="50" cy="50" r="49" fill="#fff" />
+                    <g fill="none" stroke="#2D63E8" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M28 23h34c3 0 5 2 5 5v22" />
+                      <path d="M53 76H28c-3 0-5-2-5-5V28c0-3 2-5 5-5" />
+                      <path d="M32 62h21M32 69h14" />
+                      <path d="M37 38c0-6 4-10 10-10s10 4 10 9c0 4-2 6-6 9-3 2-4 4-4 7" />
+                    </g>
+                    <circle cx="47" cy="58" r="2.8" fill="#2D63E8" />
+                    <path d="M58 48l8 35 7-12 8 12 6-5-8-11 14-1Z" fill="#2D63E8" stroke="#fff" strokeWidth="2.2" strokeLinejoin="round" />
+                  </svg>
+                  <span className="research-badge">IEEE · ICECMSN 2025</span>
+                </div>
+                <div className="research-copy">
+                  <span className="research-type">IEEE Publication</span>
+                  <h3>AutoQuizzer: AI-Powered Quiz Generation &amp; Assessment Platform</h3>
+                  <p>Published in IEEE ICECMSN 2025.</p>
+                  <span className="research-link">View publication <span aria-hidden="true">↗</span></span>
+                </div>
+              </a>
+            </Reveal>
+            <Reveal delay={220} from="right">
+              <a className="research-card" href="/assets/patent.png" target="_blank" rel="noopener noreferrer">
+                <div className="research-visual patent-preview">
+                  <img src="/assets/patent.png" alt="South African patent certificate" />
+                  <span className="research-badge">Patent No. 2025/06317</span>
+                </div>
+                <div className="research-copy">
+                  <span className="research-type">Granted Patent</span>
+                  <h3>A System for Managing Operations of Multiple Faces in Emotion Detection Process</h3>
+                  <p>Co-inventor of the granted South African patent.</p>
+                  <span className="research-link">View patent <span aria-hidden="true">↗</span></span>
+                </div>
+              </a>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       <section id="certifications" style={{ background: T.espresso, padding: isMobile ? "88px 0 0 0" : "120px 0 0 0", overflow: "hidden" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: `0 ${sidePadding}px 56px` }}>
           <Reveal><SLabel>Certifications</SLabel></Reveal>
@@ -1019,12 +1131,12 @@ export default function Portfolio() {
                 },
               ].map(({ icon, label, value, href }, i) => (
                 <Reveal key={label} delay={160 + i * 80} from="left">
-                  <div style={{ display: "flex", gap: "16px", alignItems: isMobile ? "flex-start" : "center", flexWrap: isMobile ? "wrap" : "nowrap", padding: "14px 0", borderBottom: `1px solid ${T.caramel}20` }}>
-                    <span style={{ color: T.caramel, flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.2em", color: T.caramel, width: isMobile ? "100%" : "80px" }}>{label}</span>
+                  <div className="contact-row" style={{ display: "grid", gridTemplateColumns: isMobile ? "28px 74px minmax(0, 1fr)" : "32px 92px minmax(0, 1fr)", gap: isMobile ? "10px" : "16px", alignItems: "center", padding: isMobile ? "17px 0" : "20px 0", borderBottom: `1px solid ${T.caramel}25` }}>
+                    <span className="contact-icon" style={{ color: T.caramel, display: "flex", alignItems: "center" }}>{icon}</span>
+                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? "12px" : "13px", letterSpacing: "0.2em", color: T.caramel }}>{label}</span>
                     {href
-                      ? <a href={href} style={{ fontSize: "14px", color: `${T.cream}cc`, textDecoration: "none" }}>{value}</a>
-                      : <span style={{ fontSize: "14px", color: `${T.cream}cc` }}>{value}</span>
+                      ? <a href={href} style={{ fontSize: isMobile ? "13px" : "16px", color: `${T.cream}cc`, textDecoration: "none", wordBreak: "break-word" }}>{value}</a>
+                      : <span style={{ fontSize: isMobile ? "13px" : "16px", color: `${T.cream}cc`, wordBreak: "break-word" }}>{value}</span>
                     }
                   </div>
                 </Reveal>
@@ -1062,19 +1174,62 @@ export default function Portfolio() {
                     href={href}
                     target={href.startsWith("mailto") ? undefined : "_blank"}
                     rel="noopener noreferrer"
-                    style={{ display: "flex", gap: "16px", alignItems: isMobile ? "flex-start" : "center", flexWrap: isMobile ? "wrap" : "nowrap", padding: "16px 0", borderBottom: `1px solid ${T.caramel}25`, textDecoration: "none" }}
+                    className="contact-row"
+                    style={{ display: "grid", gridTemplateColumns: isMobile ? "28px 74px minmax(0, 1fr)" : "32px 92px minmax(0, 1fr)", gap: isMobile ? "10px" : "16px", alignItems: "center", padding: isMobile ? "17px 0" : "20px 0", borderBottom: `1px solid ${T.caramel}25`, textDecoration: "none" }}
                   >
-                    <span style={{ color: T.caramel, flexShrink: 0 }}>{icon}</span>
-                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "12px", letterSpacing: "0.2em", color: T.caramel, width: isMobile ? "100%" : "80px" }}>{label}</span>
-                    <span style={{ fontSize: "14px", color: `${T.cream}cc`, wordBreak: "break-word" }}>{value}</span>
+                    <span className="contact-icon" style={{ color: T.caramel, display: "flex", alignItems: "center" }}>{icon}</span>
+                    <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? "12px" : "13px", letterSpacing: "0.2em", color: T.caramel }}>{label}</span>
+                    <span style={{ fontSize: isMobile ? "13px" : "16px", color: `${T.cream}cc`, wordBreak: "break-word" }}>{value}</span>
                   </a>
                 </Reveal>
               ))}
             </div>
             <Reveal delay={120} from="right">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", minHeight: isMobile ? "220px" : "320px" }}>
-                <svg width={isMobile ? "220" : "320"} height={isMobile ? "220" : "320"} viewBox="0 0 846.66 846.66" style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd", maxWidth: "100%", height: "auto" }} xmlns="http://www.w3.org/2000/svg">
+                <div style={{
+                  width: isMobile ? "min(100%, 300px)" : "min(100%, 440px)",
+                  padding: isMobile ? "18px 8px" : "28px 12px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: `radial-gradient(ellipse at center, ${T.caramel}18 0%, transparent 68%)`,
+                }}>
+                  <img
+                    src="/assets/edited-photo.png"
+                    alt="Handshake representing collaboration"
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "contain",
+                      filter: "brightness(0) saturate(100%) invert(91%) sepia(18%) saturate(493%) hue-rotate(343deg) brightness(106%) contrast(92%) drop-shadow(0 12px 26px rgba(155, 107, 47, 0.28))",
+                      opacity: 0.96,
+                    }}
+                  />
+                </div>
+                <svg width={isMobile ? "240" : "360"} viewBox="0 0 640 430" role="img" aria-label="Handshake representing collaboration" style={{ display: "none" }} xmlns="http://www.w3.org/2000/svg">
+                  <g fill="none" stroke={T.cream} strokeWidth="18" strokeLinecap="round" strokeLinejoin="round">
+                    {/* sleeves */}
+                    <path d="M34 108h92v184H34zM126 126h132M126 274h68" />
+                    <path d="M606 126h-136M606 274h-92M514 108h92v184h-92" />
+                    {/* joined hands */}
+                    <path d="M258 126l-77 65c22 24 45 24 68 6l55-46 66 20 142 142c15 15 15 34 2 47-13 13-31 12-46-3l-76-76" />
+                    <path d="M452 342c14 15 13 33 0 45-13 12-31 11-45-3l-73-74" />
+                    <path d="M405 382c11 14 9 31-3 42-13 11-29 9-42-4l-64-65" />
+                    <path d="M358 415c-12 14-29 15-42 3l-25-24" />
+                    <path d="M258 126h64c23 0 40 8 55 23l29 29 64-52" />
+                    {/* cuff detail */}
+                    <circle cx="304" cy="128" r="18" />
+                    <circle cx="438" cy="158" r="41" />
+                    <circle cx="438" cy="158" r="9" />
+                    {/* fingers */}
+                    <path d="M190 310l28-30c12-13 30-13 42-2 12 11 12 28 1 40l-31 33c-11 12-28 12-39 2-12-11-12-30-1-43Z" />
+                    <path d="M230 351l34-36c12-13 30-13 42-2 12 11 12 29 1 41l-35 37c-11 12-29 12-41 1-12-11-12-29-1-41Z" />
+                    <path d="M272 391l29-31c11-12 29-12 40-1 11 10 12 27 2 39l-30 32c-10 11-27 11-38 1-12-10-13-28-3-40Z" />
+                  </g>
+                  <g style={{ display: "none" }}>
                   <path fill={T.cream} d="M93.8 270.07l126.32 36.09 16.3 -57.07c3.15,-11.05 14.65,-17.46 25.7,-14.32l120.91 34.54c11.05,3.15 17.46,14.66 14.31,25.7l-16.31 57.12 7.48 2.13 77.13 -22.03 -16.32 -57.11c-3.14,-11.05 3.26,-22.56 14.31,-25.7l120.91 -34.55c11.05,-3.14 22.56,3.27 25.7,14.32l16.3 57.07 126.32 -36.08c11.05,-3.15 22.56,3.26 25.7,14.31l60.57 212.02c3.15,11.05 -3.26,22.56 -14.31,25.7l-56.57 16.17c-1.98,39.9 -29.22,74.68 -67.84,85.71l-242.46 69.27 -4.76 16.66c-3.14,11.05 -14.65,17.46 -25.7,14.31l-281.24 -80.34c-38.62,-11.04 -65.86,-45.81 -67.84,-85.72l-56.57 -16.16c-11.05,-3.14 -17.45,-14.65 -14.31,-25.7l60.57 -212.02c3.14,-11.05 14.65,-17.46 25.7,-14.32zm466.82 422.65c-13.89,-23.52 21.9,-44.65 35.79,-21.15l42.25 71.6c13.89,23.51 -21.9,44.64 -35.79,21.14l-42.25 -71.59zm105.68 1.33c-24.93,-11.12 -8.01,-49.02 16.91,-37.9l86.85 38.73c24.93,11.13 8.01,49.02 -16.91,37.9l-86.85 -38.73zm-416.85 -522.47c-15.38,22.55 -49.7,-0.87 -34.32,-23.42l45.78 -66.9c15.38,-22.54 49.7,0.88 34.32,23.42l-45.78 66.9zm-50.29 13.23c8.88,25.89 -30.49,39.38 -39.36,13.5l-28.17 -82.16c-8.88,-25.89 30.49,-39.38 39.36,-13.5l28.17 82.16zm234.96 420.53l-101.05 -27.61c-26.31,-7.16 -15.42,-47.18 10.9,-40.01l101.54 27.74 15.69 -54.93 -98.61 -26.13c-26.41,-6.95 -15.85,-47.12 10.58,-40.17l99.45 26.35 12.94 -45.32c-45.31,-12.95 -90.63,-25.9 -135.94,-38.84 -11.05,-3.14 -17.46,-14.65 -14.32,-25.7l16.32 -57.11 -80.9 -23.12 -16.31 57.08c-3.14,11.04 -14.65,17.45 -25.7,14.31l-54.47 -15.56 -52.35 183.24c-7.87,27.57 8.17,56.53 35.75,64.41l261.26 74.64c5.07,-17.76 10.14,-35.52 15.22,-53.27zm30.11 -229.44l52.74 15.06c11.05,3.15 17.46,14.66 14.31,25.7l-59.87 209.58 217.61 -62.16c27.58,-7.88 43.62,-36.85 35.75,-64.42l-52.35 -183.24 -54.47 15.56c-11.05,3.15 -22.56,-3.26 -25.7,-14.31l-16.3 -57.07 -80.91 23.11 16.32 57.11c3.14,11.05 -3.27,22.56 -14.32,25.7l-32.81 9.38zm280.04 -80l-31.84 9.09 49.14 172.03 31.84 -9.1 -49.14 -172.02zm-610.04 28.99l-31.84 -9.1 -49.14 172.03 31.84 9.09 49.14 -172.02z" />
+                  </g>
                 </svg>
               </div>
             </Reveal>
@@ -1173,8 +1328,57 @@ const CSS = `
   }
   .skill-tag:hover { background: #9B6B2F; color: #F5ECD7; transform: translateY(-2px); border-color: #9B6B2F; }
 
+  .research-card {
+    display: grid; grid-template-columns: 42% 58%; min-height: 330px;
+    overflow: hidden; border-radius: 14px; text-decoration: none;
+    background: #F5ECD7; border: 1px solid #9B6B2F2f;
+    box-shadow: 0 12px 38px #2C1A0E12;
+    transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s, border-color .35s;
+  }
+  .research-card:hover { transform: translateY(-7px); box-shadow: 0 24px 55px #2C1A0E25; border-color: #9B6B2F77; }
+  .research-visual { position: relative; min-height: 260px; display: grid; place-items: center; overflow: hidden; }
+  .research-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, #2C1A0Eaa); }
+  .autoquizzer-logo { position: relative; z-index: 1; width: min(64%, 170px); height: auto; filter: drop-shadow(0 14px 24px #0000004d); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+  .research-card:hover .autoquizzer-logo { transform: scale(1.06) rotate(-2deg); }
+  .patent-preview { background: #E8D8B8; }
+  .patent-preview img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .5s ease; }
+  .research-card:hover .patent-preview img { transform: scale(1.035); }
+  .research-badge { position: absolute; z-index: 1; left: 16px; bottom: 16px; padding: 6px 10px; border-radius: 999px; background: #2C1A0Edd; color: #F5ECD7; font-family: 'Bebas Neue', cursive; font-size: 11px; letter-spacing: .13em; }
+  .research-copy { padding: 32px 28px; display: flex; flex-direction: column; }
+  .research-type { color: #9B6B2F; font-family: 'Bebas Neue', cursive; font-size: 13px; letter-spacing: .2em; margin-bottom: 16px; }
+  .research-copy h3 { color: #2C1A0E; font-family: 'Bebas Neue', cursive; font-size: clamp(22px,2.2vw,30px); letter-spacing: .035em; line-height: 1.08; }
+  .research-copy p { color: #2C1A0Eaa; font-size: 14px; line-height: 1.7; margin-top: 16px; }
+  .research-link { color: #9B6B2F; font-family: 'Bebas Neue', cursive; font-size: 13px; letter-spacing: .13em; margin-top: auto; padding-top: 24px; }
+
+  .contact-icon svg { width: 23px; height: 23px; }
+  .contact-row { transition: background 0.25s ease, padding-left 0.25s ease; }
+  a.contact-row:hover { background: #9B6B2F0d; padding-left: 8px !important; }
+  a.contact-row:hover .contact-icon { color: #C4914A !important; }
+
   /* hide scrollbars on hscroll tracks */
   div::-webkit-scrollbar { display: none; }
+  .native-hscroll::-webkit-scrollbar { display: none; }
+  .native-hscroll::-webkit-scrollbar-track { background: #9B6B2F18; border-radius: 999px; }
+  .native-hscroll::-webkit-scrollbar-thumb { background: #9B6B2F99; border-radius: 999px; }
+  .native-hscroll::-webkit-scrollbar-thumb:hover { background: #C4914A; }
+
+  .helm-control {
+    appearance: none; border: 0; padding: 0; border-radius: 50%;
+    background: #2C1A0E; cursor: ew-resize; touch-action: none;
+    display: grid; place-items: center;
+    box-shadow: 0 10px 34px #00000042, 0 0 0 1px #9B6B2F55, 0 0 28px #9B6B2F2e;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .helm-control:hover, .helm-control:focus-visible {
+    transform: scale(1.08); outline: none;
+    box-shadow: 0 14px 42px #00000055, 0 0 0 2px #C4914A99, 0 0 36px #9B6B2F44;
+  }
+  .helm-control:active { transform: scale(0.96); }
+  .helm-control img {
+    width: 88%; height: 88%; object-fit: contain; user-select: none; pointer-events: none;
+    filter: brightness(0) saturate(100%) invert(48%) sepia(43%) saturate(791%) hue-rotate(356deg) brightness(91%) contrast(86%);
+    transition: transform 0.12s linear;
+  }
 
   .c-input {
     padding: 14px 16px; border: 1px solid #9B6B2F33; border-radius: 6px;
@@ -1230,6 +1434,9 @@ const CSS = `
       font-size: 12px;
       padding: 8px 12px;
     }
+    .research-card { grid-template-columns: 1fr; }
+    .research-visual { min-height: 230px; }
+    .research-copy { padding: 26px 22px; min-height: 250px; }
     .marquee-track {
       gap: 24px !important;
       animation-duration: 20s;
